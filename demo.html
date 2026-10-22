@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offermate — Reviewer Test Form / 审核测试表单</title>
+<style>
+  :root{--line:#e3e7ee;--brand:#2563eb;--muted:#6b7280}
+  *{box-sizing:border-box}
+  body{margin:0;background:#f5f7fb;color:#1f2937;
+       font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px 26px;margin-bottom:16px}
+  h1{font-size:19px;margin:0 0 4px}
+  h2{font-size:15px;margin:22px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 2px}
+  .en{color:#374151;font-size:13px;line-height:1.75;margin:10px 0 0}
+  .tip{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+  .full{grid-column:1 / -1}
+  label{display:block;font-size:13px;color:#374151;margin-bottom:5px}
+  label .e{color:#9ca3af;font-weight:400}
+  .req::after{content:" *";color:#dc2626}
+  input[type=text],input[type=tel],input[type=email],input[type=date],input[type=month],select,textarea{
+    width:100%;height:36px;padding:0 10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;
+  }
+  textarea{height:82px;padding:8px 10px;resize:vertical}
+  .radios{display:flex;gap:16px;align-items:center;height:36px}
+  .radios label{margin:0;display:flex;align-items:center;gap:6px;font-size:14px;color:#1f2937}
+  .actions{display:flex;gap:10px;margin-top:22px;align-items:center}
+  button{height:38px;padding:0 18px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+  #echo{margin-top:14px;font-size:13px;color:#b45309;display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card">
+    <h1>Offermate — Reviewer Test Form / 审核测试表单</h1>
+    <p class="sub">星辰科技 · 2027 届校园招聘 / Campus Recruitment 2027 — 产品运营（校招）</p>
+    <p class="en">
+      <b>How to use this page (for reviewers):</b><br>
+      This is a static reproduction of a typical Chinese campus-recruitment application form.
+      Its labels are in Chinese on purpose — the extension matches field labels by meaning, and real
+      application forms are in Chinese. You do not need to read Chinese to verify the result:
+      click the Offermate toolbar icon, press <b>“一键填写当前页面”</b> (the large blue button), and watch
+      every field below get filled in one by one, followed by a result panel listing each written value.<br>
+      The extension <b>never</b> clicks the submit button — the button at the bottom is only there so you can
+      confirm it stays untouched. This page sends nothing anywhere.
+    </p>
+    <div class="tip">测试表单：点击扩展图标 →「一键填写当前页面」，字段会被逐项填入，结束后弹出结果面板。页面不会向任何地方提交。</div>
+  </div>
+
+  <form class="card" id="form" autocomplete="off">
+    <h2>基本信息 <span class="e" style="font-weight:400;color:#9ca3af">Basic information</span></h2>
+    <div class="grid">
+      <div>
+        <label class="req" for="name">姓名</label>
+        <input type="text" id="name" name="name" placeholder="请输入真实姓名">
+      </div>
+      <div>
+        <label class="req">性别</label>
+        <div class="radios">
+          <label><input type="radio" name="gender" value="男"> 男</label>
+          <label><input type="radio" name="gender" value="女"> 女</label>
+        </div>
+      </div>
+      <div>
+        <label class="req" for="mobile">手机号码</label>
+        <input type="tel" id="mobile" name="mobile" placeholder="11 位手机号">
+      </div>
+      <div>
+        <label class="req" for="email">电子邮箱</label>
+        <input type="email" id="email" name="email" placeholder="常用邮箱">
+      </div>
+      <div>
+        <label for="birth">出生日期</label>
+        <input type="date" id="birth" name="birth">
+      </div>
+      <div>
+        <label class="req" for="degree">最高学历</label>
+        <select id="degree" name="degree">
+          <option value="">请选择</option>
+          <option>大专</option>
+          <option>本科</option>
+          <option>硕士</option>
+          <option>博士</option>
+        </select>
+      </div>
+      <div class="full">
+        <label for="expect">求职意向</label>
+        <input type="text" id="expect" name="expect" placeholder="如：产品运营 / 杭州">
+      </div>
+    </div>
+
+    <h2>教育经历 <span class="e" style="font-weight:400;color:#9ca3af">Education</span></h2>
+    <div class="grid">
+      <div>
+        <label class="req" for="school">毕业院校</label>
+        <input type="text" id="school" name="school" placeholder="学校全称">
+      </div>
+      <div>
+        <label class="req" for="major">专业名称</label>
+        <input type="text" id="major" name="major" placeholder="专业全称">
+      </div>
+      <div>
+        <label for="eduStart">开始时间</label>
+        <input type="month" id="eduStart" name="eduStart">
+      </div>
+      <div>
+        <label for="eduEnd">结束时间</label>
+        <input type="month" id="eduEnd" name="eduEnd">
+      </div>
+    </div>
+
+    <h2>实习经历 <span class="e" style="font-weight:400;color:#9ca3af">Internship</span></h2>
+    <div class="grid">
+      <div>
+        <label for="company">公司名称</label>
+        <input type="text" id="company" name="company" placeholder="公司全称">
+      </div>
+      <div>
+        <label for="position">职位名称</label>
+        <input type="text" id="position" name="position" placeholder="岗位名称">
+      </div>
+      <div class="full">
+        <label for="duty">工作职责</label>
+        <textarea id="duty" name="duty" placeholder="简要描述你的工作内容"></textarea>
+      </div>
+      <div class="full">
+        <label for="self">自我评价</label>
+        <textarea id="self" name="self" placeholder="简要描述你的优势"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="primary" id="submitBtn">提交申请</button>
+      <button type="button" id="resetBtn">清空表单</button>
+    </div>
+    <div id="echo">
+      You clicked the submit button. / 你点击了「提交申请」。<br>
+      The extension is not supposed to click this — if you did not click it yourself, please report it.
+    </div>
+  </form>
+
+</div>
+<script>
+  document.getElementById('submitBtn').addEventListener('click', function () {
+    document.getElementById('echo').style.display = 'block';
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    document.getElementById('form').reset();
+    document.getElementById('echo').style.display = 'none';
+  });
+</script>
+</body>
+</html>
