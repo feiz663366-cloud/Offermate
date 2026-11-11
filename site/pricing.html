@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>会员中心 · Offermate｜AI 网申与测评助手</title>
+<meta name="description" content="Offermate 网申表单一键填写工具的授权方案：按月卡、季卡、年卡等档位计费，所有档位功能完全相同，只差有效期。新用户免费填写 10 次、免费测评搜题 10 次。北森、Moka、飞书招聘通用，简历只存本机。">
+<!-- 上面这句故意不写具体价格：同一份 HTML 要给电商和商店两个渠道用，
+     写死数字会出现「卡片显示 9.9、搜索摘要显示 19.99」。价格只放在 config.js。 -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 导航 -->
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      </span>
+      Offermate <small>AI 网申助手</small>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">功能</a>
+      <a href="index.html#quiz">AI 测评答题</a>
+      <a href="pricing.html" class="on">会员中心</a>
+      <a href="#howto">如何购买</a>
+      <a href="#faq">常见问题</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
+      <a class="btn btn-dark btn-sm" href="#pricing">查看授权</a>
+    </div>
+  </div>
+</nav>
+
+<!-- 从扩展跳转时的来源提示，默认隐藏 -->
+<div class="from-bar" id="fromBar" hidden>
+  <div class="wrap">
+    <span><b data-from-lead>你正从 Offermate 扩展</b> <b data-v>当前版本</b><span data-from-tail> 跳转而来，价格与扩展内一致。</span></span>
+    <button class="x" type="button" aria-label="关闭">×</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>2027 秋招 · 校招网申</span>
+    <h1>让简历自己走进<br><em>网申表单</em></h1>
+    <p class="lead">
+      录一次简历，之后每个网申页点一下就好。北森、Moka、飞书招聘通用，
+      不配 API Key 也能用，简历只留在你本机。
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-lime" href="#pricing">查看授权方案</a>
+      <a class="btn btn-ghost" href="#howto">怎么拿到卡密</a>
+    </div>
+    <ul class="hero-facts">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        不配 API Key 也能用
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        简历只存本机，不上传
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        不自动提交，投递前你确认
+      </li>
+    </ul>
+  </div>
+</header>
+
+<!-- 价格 -->
+<section class="sec plans" id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>授权方案</h2>
+      <p>先免费填 10 次，觉得值再买卡。不按功能切档，只按时长卖。</p>
+    </div>
+
+    <!-- 免费额度条，内容由 assets/site.js 按 config.js 的 free 渲染 -->
+    <div class="free-band" id="freeBand" hidden></div>
+
+    <div class="plan-grid" id="planGrid">
+      <!-- 由 assets/site.js 按 config.js 渲染 -->
+      <noscript>
+        <p style="grid-column:1/-1;text-align:center;color:#4A5A78">
+          价格表需要开启 JavaScript 才能显示。也可以直接加 QQ 群 <b>1129142429</b> 询问档位与价格。
+        </p>
+      </noscript>
+    </div>
+
+    <p class="plan-note">
+      <b>为什么所有档位功能一样？</b>
+      网申填写只有「能填」和「不能填」，做功能阉割没有意义。所以只按有效期定价，
+      到期不会自动续费，也不会自动扣款。每档下方标的是「总价 ÷ 天数」算出的日均价，
+      方便你直接比贵不贵。
+    </p>
+  </div>
+</section>
+
+<!-- 四步拿卡密 -->
+<section class="sec howto" id="howto">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>卡密怎么拿到手</h2>
+      <p>插件采用离线卡密授权，验签在你本机完成，不需要注册账号、不需要联网验证。</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>加群，说明要哪一档</h3>
+        <p>QQ 群 <code data-qq>1129142429</code>，进群后说一句要哪一档，客服会把档位和价格一起发你。</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>付款，拿到一串卡密</h3>
+        <p>卡密长这样：<code>OLK1.eyJ2Ijox…</code>，是一整行字符串，中间没有空格和换行。</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>在扩展弹窗里粘贴激活</h3>
+        <p>点浏览器工具栏的扩展图标，滚到「使用授权」，粘贴卡密后点「激活」，变成绿色就生效了。</p>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <h3>打开网申页，点一下</h3>
+        <p>页面右下角出现「一键填写当前页面」，点它，字段会逐项填上，结果面板会列出每一项的实际写入值。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 使用场景 -->
+<section class="sec scenes">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>什么时候最省事</h2>
+      <p>不是「AI 帮你写简历」，而是把最枯燥的重复录入拿掉。</p>
+    </div>
+
+    <div class="scene-grid">
+      <div class="scene">
+        <span class="who">秋招集中投递</span>
+        <h3>一天投 20～30 家，字段却几乎一样</h3>
+        <p>
+          每家网申都要重新填姓名、手机、邮箱、教育经历、实习经历，内容完全相同，
+          只是表单长得不一样。插件按语义识别字段，把简历里的内容填进去，
+          多段经历自动增行，不用一格格复制粘贴。
+        </p>
+        <div class="k">省下的：<b>重复录入的时间</b>，不是投递数量</div>
+      </div>
+
+      <div class="scene">
+        <span class="who">春招补投 / 海投</span>
+        <h3>岗位换了，简历只改了两行</h3>
+        <p>
+          求职意向和项目描述微调后，还要在十几个网站重新录一遍。把简历存进插件，
+          之后每个站点直接调用，改一处、处处生效。填完可以在结果面板逐条核对再提交。
+        </p>
+        <div class="k">省下的：<b>改一次就要重录一遍的麻烦</b></div>
+      </div>
+
+      <div class="scene">
+        <span class="who">实习投递</span>
+        <h3>第一次网申，不知道哪些是必填</h3>
+        <p>
+          表单里一堆没见过的字段，填到一半才发现漏了。插件会把能识别的都填上，
+          并给出每一项的实际写入值，你只需要看剩下空着的那些手动补。
+        </p>
+        <div class="k">省下的：<b>来回翻简历核对的时间</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec faq" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>常见问题</h2>
+      <p>买之前值得先看一遍，尤其是第 3 条和第 8 条。</p>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Q1. 免费额度怎么算？用完了会怎样？</summary>
+        <div class="a">
+          新装扩展不用卡密，直接送 <b>10 次一键填写</b> 和 <b>10 次测评搜题</b>。
+          点一次「一键填写当前页面」算 1 次填写额度，问一次「测评搜题」算 1 次搜题额度，
+          两种额度分开计，不互相占用。页面没检测到可填字段时不会扣次数。
+          额度用完后按钮会提示剩余 0 次，粘贴卡密激活即可继续用，
+          <b>已经填过的简历和设置都不会丢</b>。额度记在本机浏览器存储里，换电脑不会把剩余次数带过去。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q2. 支持哪些网申网站？</summary>
+        <div class="a">
+          目前覆盖主流校招系统的标准表单：北森（zhiye.com）、Moka、飞书招聘，以及基于
+          Ant Design、Element 等常见组件库搭建的招聘站，iframe 嵌套的表单也能处理。
+          各家企业的表单结构差异很大，冷门站点或自研系统可能识别不全——填不上的字段会留空，
+          不会乱填。遇到填不上的站点，把域名和字段名发到群里，会优先适配。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q3. 能保证 100% 填对吗？</summary>
+        <div class="a">
+          不能，任何同类工具都做不到。网申站点结构经常改版，同一个字段在不同公司叫法也不一样
+          （「求职意向」可能叫「期望岗位」或「应聘职位」）。插件的做法是：能识别的按语义填，
+          填完在结果面板列出<b>每一项的实际写入值</b>，由你逐条核对。
+          <b>提交按钮始终由你自己点</b>，插件不会替你投出去。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q4. 不配置 AI 能用吗？</summary>
+        <div class="a">
+          能。核心填写走的是内置规则字典，不联网、不需要 API Key，装完激活就能填。
+          AI 是可选的第二层：接上你自己申请的豆包 / DeepSeek / Kimi / OpenAI 或任意兼容接口后，
+          可以处理规则识别不了的长文本和开放题（比如「自我评价」「为什么选择我们」）。
+          不配 AI 完全不影响表单填写。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q5. 简历和我的信息存在哪里？</summary>
+        <div class="a">
+          只存在你自己电脑的浏览器存储里，插件<b>没有后端服务器</b>，不收集、不上传、不出售任何数据，
+          也不接第三方统计。唯一的数据外发，是你主动开启 AI 功能后，由浏览器直连你自己配置的 AI 服务商；
+          关掉 AI 或清空 Key 就停止。换电脑不会同步简历，需要重新录入或导入备份。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q6. 会不会自动提交，或者投错岗位？</summary>
+        <div class="a">
+          不会。插件只做「往输入框里写值」，不点提交按钮、不点下一步、不批量投递。
+          填完停在当前页面，由你检查后自己点提交。这条是设计上的硬约束，不是可开关的选项。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q7. 卡密怎么激活？换电脑还能用吗？</summary>
+        <div class="a">
+          打开扩展弹窗，滚到「使用授权」，把卡密整行粘贴进去点「激活」。
+          验签在你本机用 RSA 公钥完成，不联网、不需要登录账号。
+          卡密里带有<b>买家标识</b>（购买时登记的尾号或昵称），激活后弹窗会显示「授权给 xxx」，
+          所以每张卡都能对应到具体买家。<b>换电脑重新粘贴一次即可</b>，不需要额外申请。
+          授权仅限购买者本人使用：转售、共享、代购的卡不在售后范围内（不换机、不解绑、不补发），
+          经核实的转售授权会被列入停用名单，在后续版本中失效。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q8. 买错了能退款吗？</summary>
+        <div class="a">
+          虚拟商品，卡密一经发出不支持退款、转让或换货，请在付款前确认档位。
+          建议先用<b>免费的 10 次</b>在你自己常投的站点上跑一遍，确认能填再买。
+          卡密从<b>签发时间</b>开始计时，不是从激活时间，所以别提前囤。
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 底部 CTA -->
+<section class="cta-band">
+  <div class="wrap">
+    <div>
+      <h2>先免费用 10 次，觉得值再买卡</h2>
+      <p>不用卡密、不用付款，装完就能填。<span data-price-from></span></p>
+    </div>
+    <div class="cta-act">
+      <button class="btn btn-lime" data-copy-qq>复制群号</button>
+      <a class="btn btn-ghost" href="#pricing" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.28)">看授权方案</a>
+    </div>
+  </div>
+</section>
+
+<!-- 页脚 -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+          </span>
+          Offermate
+        </div>
+        <p>
+          浏览器扩展，把简历按语义填进网申表单。无后端服务器，简历只存本机，
+          不自动提交，不批量投递。
+        </p>
+      </div>
+
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>产品</h4>
+          <a href="index.html">功能介绍</a>
+          <a href="pricing.html">授权方案</a>
+          <a href="#howto">怎么激活</a>
+        </div>
+        <div class="foot-col">
+          <h4>支持</h4>
+          <a href="#faq">常见问题</a>
+          <span>QQ 群 <b data-qq style="color:#fff"></b></span>
+          <a data-email href="mailto:">邮箱</a>
+        </div>
+        <div class="foot-col">
+          <h4>其他</h4>
+          <a data-privacy href="#" target="_blank" rel="noopener">隐私政策</a>
+          <span>支持 Edge / Chrome</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-bot">
+      <span>© 2026 Offermate</span>
+      <span class="sep">·</span>
+      <span>扩展 <b data-ver style="color:rgba(232,240,255,.6)"></b></span>
+      <span class="sep">·</span>
+      <span>虚拟商品，卡密发出后不支持退款</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

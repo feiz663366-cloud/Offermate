@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offermate｜AI 网申与测评助手</title>
+<meta name="description" content="浏览器扩展：把简历按语义填进网申表单。北森、Moka、飞书招聘通用，不配 API Key 也能用，简历只存本机，不自动提交。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* 首页专用 */
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feat {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 24px; box-shadow: var(--shadow-sm);
+  }
+  .feat .ic {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #EEF4FF, #E4EDFF);
+    display: grid; place-items: center;
+  }
+  .feat .ic svg { width: 20px; height: 20px; color: var(--ink-2); }
+  .feat h3 { margin-top: 16px; font-size: 16.5px; font-weight: 800; }
+  .feat p { margin-top: 8px; font-size: 14px; color: var(--body); line-height: 1.72; }
+
+  .shot-wrap { margin-top: 12px; }
+  .shot {
+    border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid var(--line); box-shadow: var(--shadow-lg);
+    background: #fff;
+  }
+  .shot-cap { margin-top: 14px; text-align: center; font-size: 13.5px; color: var(--muted); }
+
+  /* 开篇双功能：AI 网申填写 / AI 测评答题 并列、等权呈现 */
+  .cap-pair {
+    margin: 30px auto 0; max-width: 860px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    text-align: left;
+  }
+  .cap {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 20px 18px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .18s, box-shadow .18s, border-color .18s;
+  }
+  .cap:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: #C9D5EA; }
+  .cap-n {
+    flex: none; width: 30px; height: 30px; border-radius: 9px;
+    background: var(--ink-2); color: var(--lime);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800; letter-spacing: .5px;
+  }
+  .cap h2 { font-size: 17px; font-weight: 800; letter-spacing: -.2px; }
+  .cap p { margin-top: 7px; font-size: 13.5px; color: var(--body); line-height: 1.7; }
+  #fill { scroll-margin-top: 76px; }
+
+  @media (max-width: 760px) {
+    .cap-pair { grid-template-columns: 1fr; }
+  }
+
+  /* 首屏产品演示：把「填写过程」提前到第一屏，不依赖新截图。
+     数据为演示用虚构值，与商店截图一致（李清泉 / 139****7777）。 */
+  .hero-demo {
+    margin: 42px auto 0; max-width: 780px; text-align: left;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .hd-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 14px; background: #F7FAFF;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .hd-bar i { width: 9px; height: 9px; border-radius: 50%; background: #D8E1F0; flex: none; }
+  .hd-url {
+    margin-left: 8px; flex: 1; min-width: 0;
+    height: 26px; border-radius: 7px; background: #fff;
+    border: 1px solid var(--line);
+    display: flex; align-items: center; padding: 0 10px;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11.5px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .hd-live { flex: none; font-size: 11.5px; font-weight: 700; color: var(--green); }
+  .hd-body { display: grid; grid-template-columns: 1fr 210px; gap: 20px; padding: 20px; }
+  .hd-field { margin-bottom: 11px; }
+  .hd-field:last-child { margin-bottom: 0; }
+  .hd-field label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+  .hd-input {
+    height: 38px; border-radius: 9px; border: 1px solid var(--line);
+    display: flex; align-items: center; padding: 0 12px;
+    font-size: 13.5px; color: var(--body); background: #fff;
+  }
+  .hd-input.filled {
+    border-color: rgba(22,163,74,.45); background: rgba(22,163,74,.06);
+    color: var(--ink-2); font-weight: 600;
+  }
+  .hd-side { display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  .hd-btn {
+    height: 44px; border-radius: 999px;
+    background: linear-gradient(135deg, #D6FF4A, var(--lime-deep));
+    color: #10240A; font-size: 13.5px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 22px rgba(168,232,10,.3);
+  }
+  .hd-badge {
+    text-align: center; font-size: 12px; font-weight: 700; color: var(--green);
+    background: rgba(22,163,74,.08); border-radius: 999px; padding: 6px 10px;
+  }
+  .hd-note { text-align: center; font-size: 11.5px; color: var(--muted); }
+
+  /* AI 测评答题：白色底与上下区块区分；锚点留出 sticky 导航高度 */
+  .quiz { background: #fff; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+  #quiz { scroll-margin-top: 76px; }
+  .quiz-note {
+    margin-top: 22px; text-align: center;
+    font-size: 13.5px; color: var(--muted); line-height: 1.7;
+  }
+
+  @media (max-width: 640px) {
+    .hd-body { grid-template-columns: 1fr; gap: 14px; }
+  }
+
+  @media (max-width: 1000px) { .feat-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      </span>
+      Offermate <small>AI 网申助手</small>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="on">功能</a>
+      <a href="#quiz">AI 测评答题</a>
+      <a href="pricing.html">会员中心</a>
+      <a href="pricing.html#howto">如何购买</a>
+      <a href="pricing.html#faq">常见问题</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
+      <a class="btn btn-dark btn-sm" href="pricing.html">查看授权</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>2027 秋招 · 校招网申</span>
+    <h1>网申表单，<em>一键填完</em></h1>
+
+    <div class="cap-pair">
+      <a class="cap" href="#fill">
+        <span class="cap-n">01</span>
+        <div>
+          <h2>AI 网申填写</h2>
+          <p>把简历录一次，之后每个网申页点一下就好。字段按语义识别，多段经历自动增行，填完逐项给出实际写入值，你核对后再提交。</p>
+        </div>
+      </a>
+      <a class="cap" href="#quiz">
+        <span class="cap-n">02</span>
+        <div>
+          <h2>AI 测评答题</h2>
+          <p>在测评页点一下，读取题干与选项，交给 AI 给出参考解析。选项仍然由你自己选。</p>
+        </div>
+      </a>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-lime" href="pricing.html">查看授权方案</a>
+      <button class="btn btn-ghost" data-copy-qq>复制群号，问细节</button>
+    </div>
+    <ul class="hero-facts">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        新用户免费填 10 次
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        北森 / Moka / 飞书招聘 通用
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        无后端服务器
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        不自动提交
+      </li>
+    </ul>
+
+    <div class="hero-demo" aria-hidden="true">
+      <div class="hd-bar">
+        <i></i><i></i><i></i>
+        <span class="hd-url">app.mokahr.com/apply/… · 网申表单</span>
+        <span class="hd-live">● 已识别 10 个字段</span>
+      </div>
+      <div class="hd-body">
+        <div class="hd-form">
+          <div class="hd-field"><label>姓名</label><div class="hd-input filled">李清泉</div></div>
+          <div class="hd-field"><label>手机号码</label><div class="hd-input filled">139****7777</div></div>
+          <div class="hd-field"><label>最高学历</label><div class="hd-input filled">本科</div></div>
+          <div class="hd-field"><label>毕业院校</label><div class="hd-input filled">XX 大学</div></div>
+        </div>
+        <div class="hd-side">
+          <div class="hd-btn">一键填写当前页面</div>
+          <div class="hd-badge">已填 10 项 · 逐项可核对</div>
+          <div class="hd-note">不点提交，由你确认</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="sec plans" id="fill">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>它做三件事</h2>
+      <p>不是替你写简历，是把最枯燥的重复录入拿掉。</p>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
+        </div>
+        <h3>按语义识别字段</h3>
+        <p>
+          内置规则字典覆盖常见网申字段，「求职意向」「期望岗位」「应聘职位」这类同义写法都能对上。
+          不配置任何 API Key 也能完成核心填写。
+        </p>
+      </div>
+
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3z"/></svg>
+        </div>
+        <h3>简历只存本机</h3>
+        <p>
+          没有后端服务器。简历、卡密、AI 配置全部存在你浏览器的本地存储里，
+          不收集、不上传、不接第三方统计。
+        </p>
+      </div>
+
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+        </div>
+        <h3>提交始终由你点</h3>
+        <p>
+          插件只往输入框里写值，不点提交、不点下一步、不批量投递。
+          填完停在当前页面，逐项核对后你自己点提交。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>填完长什么样</h2>
+      <p>结果面板只列已填写的字段和真实写入值，不写「跳过」「未匹配」这类没法核对的分类。</p>
+    </div>
+    <div class="shot-wrap">
+      <div class="shot">
+        <img src="assets/shots/result.png" alt="填写结果面板：已填 10 项，逐项列出字段与实际写入值" loading="lazy">
+      </div>
+      <p class="shot-cap">填写完成后，每一项的实际写入值都会列出来，方便逐条核对。</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec quiz" id="quiz">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>AI 测评答题</h2>
+      <p>在测评页点一下，读取题干与选项，交给 AI 给出参考解析。选项仍然由你自己选。</p>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+        </div>
+        <h3>读取题干，给参考解析</h3>
+        <p>
+          点右下角「AI 测评辅助」，扩展读取当前页面的题干与选项，输出参考项、推理过程与注意事项，
+          帮你快速判断，而不是盲选。
+        </p>
+      </div>
+
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>
+        </div>
+        <h3>两种模式，覆盖常见测评</h3>
+        <p>
+          <b>知识题分析</b>用于认知能力、行测类题目；<b>性格测评</b>先填目标岗位，再给出岗位倾向参考。
+          网申附带的测评页可直接使用，本地题库 HTML 需手动开启「允许访问文件网址」。
+        </p>
+      </div>
+
+      <div class="feat">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3>只给参考，不替你作答</h3>
+        <p>
+          不自动勾选、不自动提交。性格题没有标准答案，输出的是岗位倾向参考，不代表录用结论。
+          同一道题命中本地缓存时，不重复扣次数。
+        </p>
+      </div>
+    </div>
+
+    <p class="quiz-note">
+      测评辅助需要配置你自己的 AI Key；不配也不影响一键填写。新装送 10 次测评搜题，用完后可用卡密继续。
+    </p>
+  </div>
+</section>
+
+<section class="sec howto">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>怎么开始用</h2>
+      <p>三步，不需要注册账号。</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <h3>装扩展</h3>
+        <p>从 Edge 商店安装；或打开扩展管理页，开启「开发者模式」加载解压后的目录。</p>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <h3>粘贴卡密激活</h3>
+        <p>点工具栏图标，滚到「使用授权」，粘贴卡密点「激活」。验签在本机完成，不联网。</p>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <h3>录入简历，去网申页点一下</h3>
+        <p>设置页逐字段录入，或导入 PDF / Word 简历自动解析。之后每个网申页右下角都有「一键填写当前页面」。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <div>
+      <h2>先免费用 10 次试试</h2>
+      <p>不用卡密、不用付款，装完就能填。觉得值再看授权方案。</p>
+    </div>
+    <div class="cta-act">
+      <a class="btn btn-lime" href="pricing.html">查看授权方案</a>
+      <button class="btn btn-ghost" data-copy-qq style="background:transparent;color:#fff;border-color:rgba(255,255,255,.28)">复制群号</button>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+          </span>
+          Offermate
+        </div>
+        <p>浏览器扩展，把简历按语义填进网申表单。无后端服务器，简历只存本机，不自动提交。</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>产品</h4>
+          <a href="index.html">功能介绍</a>
+          <a href="pricing.html">授权方案</a>
+          <a href="pricing.html#howto">怎么激活</a>
+        </div>
+        <div class="foot-col">
+          <h4>支持</h4>
+          <a href="pricing.html#faq">常见问题</a>
+          <span>QQ 群 <b data-qq style="color:#fff"></b></span>
+          <a data-email href="mailto:">邮箱</a>
+        </div>
+        <div class="foot-col">
+          <h4>其他</h4>
+          <a data-privacy href="#" target="_blank" rel="noopener">隐私政策</a>
+          <span>支持 Edge / Chrome</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Offermate</span>
+      <span class="sep">·</span>
+      <span>扩展 <b data-ver style="color:rgba(232,240,255,.6)"></b></span>
+      <span class="sep">·</span>
+      <span>虚拟商品，卡密发出后不支持退款</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>
