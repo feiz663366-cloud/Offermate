@@ -10,10 +10,12 @@
    历史：1.9.16 起曾拆成「电商 9.9 四档 / 商店 19.99 三档」两份配置，
    1.9.22 起两渠道同价，1.9.23 干脆合并回一份——留着两套只会增加漏改风险。
    卡密由同一把私钥签发，任何渠道的卡都能互相激活。 */
-window.SITE = {
+/* 用 (window || self) 赋值：官网页面里是 window，扩展 Service Worker 里
+   importScripts 加载时没有 window，只能挂到 self 上。两边读到的都是同一份配置。 */
+(typeof window !== 'undefined' ? window : self).SITE = {
   brand: 'Offermate',
   slogan: 'AI 网申与测评助手',
-  version: '1.9.23',
+  version: '1.9.25',
 
   /* 联系方式（与扩展 support-info.js 同源） */
   qqGroup: '1129142429',
@@ -25,8 +27,19 @@ window.SITE = {
      site.js 按 location.protocol 自动选，不用改这里 */
   privacyUrl: 'https://feiz663366-cloud.github.io/Offermate/',
   privacyLocal: 'privacy.html',
+  /* 线上站根地址（末尾带斜杠）。扩展内「在网页端查看投递记录」用它拼 my.html */
+  siteOnline: 'https://feiz663366-cloud.github.io/Offermate/site/',
   /* 扩展下载地址：留空则「获取扩展」按钮改为提示加群 */
   downloadUrl: '',
+
+  /* 云端（Supabase）
+     url / anonKey 在 Supabase 控制台 Project Settings → API 里取。
+     anonKey 是公开凭证，可以放在前端；service_role key 绝对不要写进来。
+     两个值都留空时，扩展与官网完全按纯本地模式运行，不发任何请求。 */
+  cloud: {
+    url: 'https://wiszvjuuhylicrqhmdqc.supabase.co',
+    anonKey: 'sb_publishable_nmMWahTk1HziPGOl_t8Y-Q_2Xe52diY'
+  },
 
   /* 免费额度：新用户装完直接可用，不需要卡密。
      数值必须与扩展包 license-core.js 的 FREE_QUOTA 一致，

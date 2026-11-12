@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>我的投递 · Offermate｜AI 网申与测评助手</title>
+<meta name="description" content="登录后查看你通过 Offermate 一键填写过的网申记录：公司、岗位、填写次数与时间。只记录网址与标题，不保存表单内容。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .my-wrap { max-width: 760px; margin: 0 auto; }
+  .my-card {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
+  }
+  .my-card h2 { font-size: 17px; }
+  .my-card .sub { margin-top: 6px; font-size: 13.5px; color: var(--body); }
+  .my-form { margin-top: 18px; display: grid; gap: 12px; max-width: 380px; }
+  .my-form label { display: block; font-size: 13px; color: var(--body); }
+  .my-form input {
+    width: 100%; height: 40px; margin-top: 6px; padding: 0 12px;
+    border: 1px solid var(--line); border-radius: 10px; font-size: 14px;
+  }
+  .my-form input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(49,91,234,.12); }
+  .my-act { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .my-hint { margin-top: 12px; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+  .my-hint.err { color: #B42318; }
+  .my-hint.ok { color: #3F6212; }
+
+  .my-stat { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .my-stat .badge { font-size: 12.5px; color: var(--body); background: #F2F4F7; border-radius: 999px; padding: 4px 11px; }
+  .my-list { list-style: none; margin: 16px 0 0; padding: 0; }
+  .my-list li {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 13px 0; border-top: 1px solid #F2F4F7; font-size: 14px;
+  }
+  .my-list li:first-child { border-top: none; }
+  .my-list .co { font-weight: 700; }
+  .my-list .po { color: var(--body); font-size: 13.5px; }
+  .my-list .meta { margin-left: auto; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .my-list .del {
+    border: 1px solid var(--line); background: #fff; color: var(--muted);
+    border-radius: 8px; font-size: 12px; padding: 4px 9px; cursor: pointer;
+  }
+  .my-list .del:hover { color: #B42318; border-color: #FDA29B; }
+  .my-empty { margin-top: 18px; font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      </span>
+      Offermate <small>AI 网申助手</small>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">功能</a>
+      <a href="index.html#quiz">AI 测评答题</a>
+      <a href="pricing.html">会员中心</a>
+      <a href="pricing.html#howto">如何购买</a>
+      <a href="pricing.html#faq">常见问题</a>
+      <a href="my.html" class="on">我的投递</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
+      <a class="btn btn-dark btn-sm" href="pricing.html">查看授权</a>
+    </div>
+  </div>
+</nav>
+
+<main class="sec">
+  <div class="wrap my-wrap">
+
+    <div class="my-card" id="noticeCard" hidden>
+      <h2 id="noticeTitle">云端未开通</h2>
+      <p class="sub" id="noticeText">当前站点还没有配置云端服务，账号与同步功能不可用。填写功能本身不受影响。</p>
+    </div>
+
+    <div class="my-card" id="authCard">
+      <h2>登录后查看投递记录</h2>
+      <p class="sub">每次在网申页点「一键填写」，扩展会自动记一条：公司、岗位、填写次数、时间。只记网址和标题，表单里填的内容不会上传。</p>
+      <div class="my-form">
+        <label>邮箱
+          <input id="email" type="email" autocomplete="username" placeholder="you@example.com">
+        </label>
+        <label>密码
+          <input id="password" type="password" autocomplete="current-password" placeholder="至少 6 位">
+        </label>
+        <div class="my-act">
+          <button class="btn btn-dark btn-sm" id="loginBtn">登录</button>
+          <button class="btn btn-ghost btn-sm" id="signupBtn">注册新账号</button>
+        </div>
+      </div>
+      <p class="my-hint" id="authHint">账号只用于同步投递记录。简历正文始终只存在你自己的浏览器里。</p>
+    </div>
+
+    <div class="my-card" id="listCard" hidden>
+      <div class="my-stat">
+        <h2>我的投递</h2>
+        <span class="badge" id="statText">—</span>
+      </div>
+      <ul class="my-list" id="list"></ul>
+      <p class="my-empty" id="emptyText" hidden>还没有记录。去网申页点一次「一键填写」，刷新这里就会出现。</p>
+      <div class="my-act" style="margin-top:16px">
+        <button class="btn btn-ghost btn-sm" id="syncBtn">刷新</button>
+        <button class="btn btn-ghost btn-sm" id="logoutBtn">退出登录</button>
+      </div>
+      <p class="my-hint" id="listHint"></p>
+    </div>
+
+    <div class="my-card">
+      <h2>这些数据存在哪</h2>
+      <p class="sub">
+        账号与投递记录存在 Supabase（境外托管数据库），简历、卡密与 AI 设置始终只存在你自己的浏览器里。
+        删除某条记录会同时删除云端那一行；需要注销账号请发邮件到 <a data-email href="mailto:"></a>。
+      </p>
+      <p class="my-hint">撤回同意后我们会在 7 个工作日内删除账号及其全部投递记录。</p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-bot">
+      <span>© 2026 Offermate</span>
+      <span class="sep">·</span>
+      <span>扩展 <b data-ver style="color:rgba(232,240,255,.6)"></b></span>
+      <span class="sep">·</span>
+      <a data-privacy href="#" target="_blank" rel="noopener">隐私政策</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/cloud.js"></script>
+<script src="assets/my.js"></script>
+</body>
+</html>
