@@ -15,7 +15,7 @@
 (typeof window !== 'undefined' ? window : self).SITE = {
   brand: 'Offermate',
   slogan: 'AI 网申与测评助手',
-  version: '1.9.26',
+  version: '1.9.27',
 
   /* 联系方式（与扩展 support-info.js 同源） */
   qqGroup: '1129142429',
@@ -37,7 +37,7 @@
      anonKey 是公开凭证，可以放在前端；service_role key 绝对不要写进来。
      两个值都留空时，扩展与官网完全按纯本地模式运行，不发任何请求。 */
   cloud: {
-    url: 'https://wiszvjuuhylicrqhmdqc.supabase.co',
+    url: 'https://wiszvjuuhyiicrqhmdqc.supabase.co',
     anonKey: 'sb_publishable_nmMWahTk1HziPGOl_t8Y-Q_2Xe52diY'
   },
 
