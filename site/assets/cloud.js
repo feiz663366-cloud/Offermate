@@ -49,6 +49,38 @@
     return new Error(msg);
   }
 
+  /* 带超时的 fetch。
+     没有超时是个真实事故：网络半通（代理黑洞、DNS 卡住、被墙抖动）时
+     fetch 会 pending 几分钟，按钮一直停在「正在注册…」，用户只能以为卡死。
+     超时后主动 abort，转成一句能看懂的话。 */
+  var TIMEOUT = 15000;
+
+  function timedFetch(url, opts) {
+    var o = {};
+    for (var k in (opts || {})) if (Object.prototype.hasOwnProperty.call(opts, k)) o[k] = opts[k];
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = null;
+    if (ctrl) {
+      o.signal = ctrl.signal;
+      timer = setTimeout(function () {
+        try { ctrl.abort(); } catch (e) { /* 已结束 */ }
+      }, TIMEOUT);
+    }
+    function done() { if (timer) { clearTimeout(timer); timer = null; } }
+
+    return fetch(url, o).then(function (r) {
+      done();
+      return r;
+    }, function (e) {
+      done();
+      var aborted = (e && (e.name === 'AbortError' || /abort/i.test(e.message || '')));
+      if (aborted) {
+        throw new Error('连不上云端（' + (TIMEOUT / 1000) + ' 秒无响应）。请换个网络重试，或用手机热点。');
+      }
+      throw netError(e);
+    });
+  }
+
   function parseErr(status, body) {
     var d = body || {};
     var m = d.msg || d.message || d.error_description || d.error || '';
@@ -113,11 +145,11 @@
   /* ---------------- Auth ---------------- */
 
   function authPost(path, body) {
-    return fetch(api(path), {
+    return timedFetch(api(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: CFG.anonKey },
       body: JSON.stringify(body || {})
-    }).catch(netError).then(function (r) {
+    }).then(function (r) {
       return r.text().then(function (t) {
         var d = {};
         try { d = t ? JSON.parse(t) : {}; } catch (e) { d = {}; }
@@ -158,7 +190,7 @@
   function signOut() {
     var token = session && session.access_token;
     var p = token
-      ? fetch(api('/auth/v1/logout'), {
+      ? timedFetch(api('/auth/v1/logout'), {
           method: 'POST',
           headers: { apikey: CFG.anonKey, Authorization: 'Bearer ' + token }
         }).catch(function () { /* 本地一定要退干净，网络失败不影响 */ })
@@ -182,7 +214,7 @@
   function adoptToken(tk) {
     var t = String(tk || '').trim();
     if (!t) return Promise.resolve(null);
-    return fetch(api('/auth/v1/user'), {
+    return timedFetch(api('/auth/v1/user'), {
       headers: { apikey: CFG.anonKey, Authorization: 'Bearer ' + t }
     }).catch(function () { return null; }).then(function (r) {
       if (!r || !r.ok) return null;
@@ -209,11 +241,11 @@
       if (tk) headers.Authorization = 'Bearer ' + tk;
       if (opts.prefer) headers.Prefer = opts.prefer;
 
-      return fetch(api(opts.path), {
+      return timedFetch(api(opts.path), {
         method: opts.method || 'GET',
         headers: headers,
         body: opts.body === undefined ? undefined : JSON.stringify(opts.body)
-      }).catch(netError).then(function (r) {
+      }).then(function (r) {
         return r.text().then(function (t) {
           var d = null;
           if (t) { try { d = JSON.parse(t); } catch (e) { d = null; } }
