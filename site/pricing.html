@@ -25,10 +25,11 @@
       <a href="index.html">功能</a>
       <a href="index.html#quiz">AI 测评答题</a>
       <a href="pricing.html" class="on">会员中心</a>
-      <a href="#howto">如何购买</a>
-      <a href="#faq">常见问题</a>
+      <a href="#howto" class="nav-2nd">如何购买</a>
+      <a href="#faq" class="nav-2nd">常见问题</a>
       <a href="jobs.html">秋招岗位</a>
       <a href="my.html">我的投递</a>
+      <a href="share.html">体验官福利</a>
     </div>
     <div class="nav-cta">
       <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
@@ -101,6 +102,14 @@
       到期不会自动续费，也不会自动扣款。每档下方标的是「总价 ÷ 天数」算出的日均价，
       方便你直接比贵不贵。
     </p>
+
+    <!-- 体验官福利入口：金额来自 config.js 的 share.off，HTML 不写死 -->
+    <a class="welfare-bar" href="share.html" data-share-block>
+      <span class="wb-tag">福利</span>
+      <span class="wb-t">买断版还能再减 <b data-share-off></b> 元</span>
+      <span class="wb-d">发一条真实使用笔记，审核通过即生效，不用写好评</span>
+      <span class="wb-go">看看怎么领</span>
+    </a>
   </div>
 </section>
 
@@ -314,6 +323,7 @@
         <div class="foot-col">
           <h4>支持</h4>
           <a href="#faq">常见问题</a>
+          <a href="share.html">体验官福利</a>
           <span>QQ 群 <b data-qq style="color:#fff"></b></span>
           <a data-email href="mailto:">邮箱</a>
         </div>
@@ -339,5 +349,6 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/site.js"></script>
+<script src="assets/share.js"></script>
 </body>
 </html>

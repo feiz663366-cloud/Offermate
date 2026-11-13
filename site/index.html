@@ -122,6 +122,58 @@
     .hd-body { grid-template-columns: 1fr; gap: 14px; }
   }
 
+  /* 体验官福利入口：浅色区块 + 右侧一张撕口小票，避免和下面的深色 CTA 撞色 */
+  .promo {
+    display: grid; grid-template-columns: 1fr 260px; gap: 0;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .promo-l { padding: 34px 34px 32px; }
+  .promo-tag {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    background: #F1FFD6; color: #3F5C06;
+    font-size: 12px; font-weight: 700; letter-spacing: .6px;
+  }
+  .promo-l h2 {
+    margin-top: 14px; font-size: clamp(21px, 2.6vw, 27px);
+    font-weight: 800; letter-spacing: -.3px; line-height: 1.35;
+  }
+  .promo-l h2 em {
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 62%, var(--lime) 62%, var(--lime) 92%, transparent 92%);
+    padding: 0 2px;
+  }
+  .promo-l p { margin-top: 12px; font-size: 14.5px; color: var(--body); line-height: 1.78; max-width: 560px; }
+  .promo-cta { margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .promo-cta .btn { height: 42px; padding: 0 22px; font-size: 14px; }
+
+  .promo-r {
+    background: linear-gradient(150deg, #1B2C55, #0B1730);
+    color: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border-left: 2px dashed var(--line); position: relative;
+  }
+  .promo-r::before, .promo-r::after {
+    content: ""; position: absolute; left: -11px; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--bg);
+  }
+  .promo-r::before { top: -10px; }
+  .promo-r::after { bottom: -10px; }
+  .promo-r .k { font-size: 12px; color: rgba(232,240,255,.6); letter-spacing: .5px; }
+  .promo-r .v { margin-top: 6px; display: flex; align-items: baseline; gap: 1px; }
+  .promo-r .v i { font-style: normal; font-size: 20px; font-weight: 700; color: var(--lime); }
+  .promo-r .v b { font-size: 50px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+  .promo-r .u { margin-top: 8px; font-size: 12px; color: rgba(232,240,255,.55); }
+
+  @media (max-width: 820px) {
+    .promo { grid-template-columns: 1fr; }
+    .promo-r { border-left: 0; border-top: 2px dashed var(--line); padding: 22px 0; }
+    .promo-r::before { top: -11px; left: -10px; }
+    .promo-r::after { top: -11px; bottom: auto; left: auto; right: -10px; }
+    .promo-l { padding: 26px 22px 24px; }
+  }
+
   @media (max-width: 1000px) { .feat-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -139,10 +191,11 @@
       <a href="index.html" class="on">功能</a>
       <a href="#quiz">AI 测评答题</a>
       <a href="pricing.html">会员中心</a>
-      <a href="pricing.html#howto">如何购买</a>
-      <a href="pricing.html#faq">常见问题</a>
+      <a href="pricing.html#howto" class="nav-2nd">如何购买</a>
+      <a href="pricing.html#faq" class="nav-2nd">常见问题</a>
       <a href="jobs.html">秋招岗位</a>
       <a href="my.html">我的投递</a>
+      <a href="share.html">体验官福利</a>
     </div>
     <div class="nav-cta">
       <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
@@ -351,6 +404,30 @@
   </div>
 </section>
 
+<section class="sec">
+  <div class="wrap">
+    <div class="promo" data-share-block>
+      <div class="promo-l">
+        <span class="promo-tag">体验官福利</span>
+        <h2>用过之后发一条真实笔记，<br>买断版<em>立减 <span data-share-off></span> 元</em></h2>
+        <p>
+          在小红书、抖音、B站或知乎写下你实际填网申的过程，把笔记链接发到群里，
+          管理员看过就给减价。不用写好评，也不看你多少粉丝——说缺点一样算数。
+        </p>
+        <div class="promo-cta">
+          <a class="btn btn-dark" href="share.html">看看怎么领</a>
+          <a class="btn btn-ghost" href="share.html#howto">参与要求</a>
+        </div>
+      </div>
+      <div class="promo-r">
+        <span class="k">买断版立减</span>
+        <span class="v"><i>¥</i><b data-share-off></b></span>
+        <span class="u">审核通过即生效</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta-band">
   <div class="wrap">
     <div>
@@ -388,6 +465,7 @@
         <div class="foot-col">
           <h4>支持</h4>
           <a href="pricing.html#faq">常见问题</a>
+          <a href="share.html">体验官福利</a>
           <span>QQ 群 <b data-qq style="color:#fff"></b></span>
           <a data-email href="mailto:">邮箱</a>
         </div>
@@ -412,5 +490,6 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/site.js"></script>
+<script src="assets/share.js"></script>
 </body>
 </html>

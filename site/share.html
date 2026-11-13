@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>体验官福利｜发一条真实体验，买断版立减</title>
+<meta name="description" content="在公开平台分享真实的 Offermate 使用体验，加群提交笔记链接，人工审核通过后买断版立减。不用好评，不看粉丝。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* 体验官福利页专用 */
+  .sh-hero { padding: 68px 0 44px; text-align: center; position: relative; overflow: hidden; }
+  .sh-hero h1 {
+    margin: 20px auto 0; max-width: 760px;
+    font-size: clamp(28px, 4.4vw, 46px); line-height: 1.24;
+    font-weight: 800; letter-spacing: -.5px;
+  }
+  .sh-hero h1 em {
+    font-style: normal; white-space: nowrap;
+    background: linear-gradient(180deg, transparent 62%, var(--lime) 62%, var(--lime) 92%, transparent 92%);
+    padding: 0 2px;
+  }
+  .sh-hero .lead {
+    margin: 18px auto 0; max-width: 620px;
+    font-size: 16.5px; color: var(--body); line-height: 1.78;
+  }
+  .sh-badges {
+    margin: 26px auto 0; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  }
+  .sh-badges li {
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 34px; padding: 0 15px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--line);
+    font-size: 13px; font-weight: 600; color: var(--ink-2);
+  }
+  .sh-badges svg { width: 14px; height: 14px; color: var(--green); flex: none; }
+
+  /* 券面：左深右浅，中间虚线 + 上下两个撕口 */
+  .coupon {
+    margin: 36px auto 0; max-width: 780px;
+    display: grid; grid-template-columns: 300px 1fr;
+    background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .cp-l {
+    background: linear-gradient(150deg, #1B2C55, #0B1730);
+    color: #fff; padding: 30px 22px 26px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .cp-tag {
+    display: inline-block; align-self: center;
+    padding: 4px 12px; border-radius: 999px;
+    background: rgba(201, 255, 59, .16); color: var(--lime);
+    font-size: 12px; font-weight: 700; letter-spacing: .6px;
+  }
+  .cp-off { margin-top: 14px; display: flex; align-items: baseline; justify-content: center; gap: 2px; }
+  .cp-off .cur { font-size: 24px; font-weight: 700; color: var(--lime); }
+  .cp-off .num { font-size: 58px; font-weight: 800; letter-spacing: -2px; line-height: 1; color: #fff; }
+  .cp-off .unit { margin-left: 6px; font-size: 15px; font-weight: 600; color: rgba(232,240,255,.72); }
+  .cp-sub { margin-top: 10px; font-size: 12.5px; color: rgba(232, 240, 255, .62); line-height: 1.6; }
+
+  .cp-r { position: relative; padding: 28px 28px 26px; border-left: 2px dashed var(--line); text-align: left; }
+  .cp-r::before, .cp-r::after {
+    content: ""; position: absolute; left: -11px; width: 20px; height: 20px;
+    border-radius: 50%; background: var(--bg);
+  }
+  .cp-r::before { top: -10px; }
+  .cp-r::after { bottom: -10px; }
+  .cp-name { font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: .4px; }
+  .cp-price { margin-top: 10px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .cp-price .was { font-size: 17px; color: var(--muted); text-decoration: line-through; }
+  .cp-price .arrow { font-size: 15px; color: var(--muted); }
+  .cp-price .now { font-size: 34px; font-weight: 800; letter-spacing: -.6px; color: var(--ink); }
+  .cp-price .now i { font-style: normal; font-size: 20px; margin-right: 1px; }
+  .cp-price .save {
+    font-size: 12px; font-weight: 700; color: #10240A;
+    background: linear-gradient(135deg, #D6FF4A, var(--lime-deep));
+    border-radius: 999px; padding: 3px 10px;
+  }
+  .cp-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .cp-list li { display: flex; gap: 8px; font-size: 13.5px; color: var(--body); line-height: 1.6; }
+  .cp-list svg { width: 15px; height: 15px; color: var(--green); flex: none; margin-top: 2px; }
+  .cp-cta { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .cp-cta .btn { height: 40px; padding: 0 20px; font-size: 13.5px; }
+
+  .sh-off { text-align: center; margin-top: 26px; font-size: 13px; color: var(--muted); }
+
+  /* 三步 */
+  .steps-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .s3 {
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px 22px; box-shadow: var(--shadow-sm);
+  }
+  .s3-n {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: var(--ink-2); color: var(--lime);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800;
+  }
+  .s3 h3 { margin-top: 14px; font-size: 16px; font-weight: 800; }
+  .s3 p { margin-top: 7px; font-size: 13.5px; color: var(--body); line-height: 1.72; }
+  .s3 .lk { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--blue); }
+
+  /* 三条要求 */
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .rule {
+    background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--lime-deep);
+    border-radius: var(--radius); padding: 22px 20px; box-shadow: var(--shadow-sm);
+  }
+  .rule h3 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .rule h3 svg { width: 17px; height: 17px; color: var(--green); flex: none; }
+  .rule p { margin-top: 8px; font-size: 13.5px; color: var(--body); line-height: 1.72; }
+
+  /* 提交 */
+  .submit-box {
+    max-width: 780px; margin: 0 auto;
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: 28px 30px; box-shadow: var(--shadow);
+  }
+  .submit-box h3 { font-size: 18px; font-weight: 800; }
+  .submit-box > p { margin-top: 8px; font-size: 14px; color: var(--body); line-height: 1.75; }
+  .sb-qq {
+    margin-top: 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 16px 18px; border-radius: var(--radius);
+    background: #F5F9FF; border: 1px dashed #C9D8F0;
+  }
+  .sb-qq .k { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+  .sb-qq .v {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: .5px;
+  }
+  .sb-qq .btn { height: 38px; padding: 0 18px; font-size: 13.5px; margin-left: auto; }
+  .sb-need { margin-top: 16px; display: flex; flex-direction: column; gap: 7px; }
+  .sb-need li { font-size: 13.5px; color: var(--body); padding-left: 18px; position: relative; line-height: 1.7; }
+  .sb-need li::before {
+    content: ""; position: absolute; left: 4px; top: 9px;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--lime-deep);
+  }
+
+  .sh-sec { padding: 62px 0; }
+  .sh-sec.alt { background: #fff; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+
+  @media (max-width: 900px) {
+    .steps-3, .rules { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .coupon { grid-template-columns: 1fr; }
+    .cp-r { border-left: 0; border-top: 2px dashed var(--line); }
+    .cp-r::before { left: -10px; top: -11px; }
+    .cp-r::after { left: auto; right: -10px; top: -11px; bottom: auto; }
+    .cp-off .num { font-size: 48px; }
+    .submit-box { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      </span>
+      Offermate <small>AI 网申助手</small>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">功能</a>
+      <a href="index.html#quiz">AI 测评答题</a>
+      <a href="pricing.html">会员中心</a>
+      <a href="pricing.html#howto">如何购买</a>
+      <a href="jobs.html">秋招岗位</a>
+      <a href="my.html">我的投递</a>
+      <a href="share.html" class="on">体验官福利</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
+      <a class="btn btn-dark btn-sm" href="pricing.html">查看授权</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sh-hero">
+  <div class="wrap">
+    <span class="eyebrow"><i></i>体验官福利 · 长期有效</span>
+    <h1>发一条真实笔记，<br>买断版<em>立减 <span data-share-off></span> 元</em></h1>
+    <p class="lead">
+      在小红书、抖音、B站或知乎分享你用 Offermate 填网申的真实过程，把笔记链接发到群里审核，通过后买断版直接减价。不需要写好评，也不看你的粉丝数。
+    </p>
+    <ul class="sh-badges">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        不用好评，真实感受即可
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        不看粉丝与点赞
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        人工审核，通过即生效
+      </li>
+    </ul>
+
+    <div class="coupon" data-share-block>
+      <div class="cp-l">
+        <span class="cp-tag">体验官专享</span>
+        <div class="cp-off">
+          <span class="cur">¥</span>
+          <span class="num" data-share-off></span>
+          <span class="unit">元</span>
+        </div>
+        <p class="cp-sub">买断版专用立减<br>一条笔记，一次机会</p>
+      </div>
+      <div class="cp-r">
+        <div class="cp-name" data-share-plan-name>买断版</div>
+        <div class="cp-price">
+          <span class="was" data-share-was></span>
+          <span class="arrow">→</span>
+          <span class="now"><i>¥</i><span data-share-now></span></span>
+          <span class="save">省 <span data-share-off></span> 元</span>
+        </div>
+        <ul class="cp-list">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            审核通过后找群管理员按到手价开卡，有效期与原价档位完全一致
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            已经买过其他档位也能用：升级买断版时同样减
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            每人限领 <span data-share-limit></span> 次，笔记需保持公开 <span data-share-keep></span> 天
+          </li>
+        </ul>
+        <div class="cp-cta">
+          <button class="btn btn-lime" data-copy-qq>复制群号，去领福利</button>
+          <a class="btn btn-ghost" href="#howto">看怎么参与</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="sh-off" data-share-offline hidden>本期活动已结束，关注群公告等下一期。</p>
+  </div>
+</header>
+
+<section class="sh-sec alt" id="howto">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>怎么参与</h2>
+      <p>三步，全程不用注册，也不用提供账号密码。</p>
+    </div>
+    <div class="steps-3">
+      <div class="s3">
+        <div class="s3-n">1</div>
+        <h3>先用起来</h3>
+        <p>
+          装上扩展，用免费额度真实填一次网申、或者试一次测评辅助。
+          福利要的是真实体验，没实际用过写不出来。
+        </p>
+      </div>
+      <div class="s3">
+        <div class="s3-n">2</div>
+        <h3>发一条公开笔记</h3>
+        <p>
+          在 <span data-share-channels></span> 任一平台发布，写清使用场景、用过的功能、
+          实际感受。好的坏的都能写。
+        </p>
+      </div>
+      <div class="s3">
+        <div class="s3-n">3</div>
+        <h3>发链接给管理员</h3>
+        <p>
+          加群后私聊管理员，发<b>笔记链接 + 你的群昵称</b>。
+          审核 <span data-share-review></span> 内回复，通过后按到手价开卡。
+        </p>
+        <a class="lk" href="#submit">去提交 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>发布前，确认这 3 项</h2>
+      <p>三条都满足就一定能过，没有隐藏门槛。</p>
+    </div>
+    <div class="rules">
+      <div class="rule">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          写真实体验，提到 Offermate
+        </h3>
+        <p>
+          说清你填的是什么岗位、用了哪个功能、哪里好用哪里别扭。
+          不需要夸，写缺点同样算数，只要是你自己的真实经历。
+        </p>
+      </div>
+      <div class="rule">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          配真实截图，挡住个人信息
+        </h3>
+        <p>
+          截图请用你自己的界面，<b>姓名、手机号、身份证、学校全名务必打码</b>。
+          我们不会要求你提供简历原文，你也不用发给我。
+        </p>
+      </div>
+      <div class="rule">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          原创且保持公开
+        </h3>
+        <p>
+          自己写的、不删不改，<span data-share-keep></span> 天内保持公开可查看，方便复核。
+          搬运、AI 批量生成、纯广告文案不算。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sh-sec alt" id="submit">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>提交审核</h2>
+      <p>群是唯一的提交入口，没有第三方表单，也不收集你的任何账号信息。</p>
+    </div>
+    <div class="submit-box">
+      <h3>加群后私聊管理员</h3>
+      <p>
+        在群里找到管理员，直接发消息即可。审核是人工看的，会实际点开你的笔记确认内容，
+        所以请确认链接是公开可访问的。
+      </p>
+      <div class="sb-qq">
+        <div>
+          <div class="k">QQ 群号</div>
+          <div class="v" data-qq></div>
+        </div>
+        <button class="btn btn-dark" data-copy-qq>复制群号</button>
+      </div>
+      <ul class="sb-need">
+        <li>笔记链接（完整可打开的那种，不是截图）</li>
+        <li>你的群昵称，方便对上人</li>
+        <li>想要哪一档：买断版立减，其他档位原价</li>
+      </ul>
+      <p style="margin-top:16px;font-size:13px;color:var(--muted)">
+        审核不通过会说明原因，改完可以再提交一次。同一个人重复提交多条笔记只按一条算。
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="sh-sec">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>常见问题</h2>
+      <p>没写到的，进群直接问。</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>Q1. 能领到什么？</summary>
+        <div class="a">
+          一条通过审核的笔记，可以按<b>买断版立减 <span data-share-off></span> 元</b>的价格开卡。
+          减价后的卡和原价卡<b>完全一样</b>：同样的功能、同样的使用期限、同样支持换电脑重装，
+          不是试用版也不是阉割版。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q2. 一定要写好评吗？</summary>
+        <div class="a">
+          不用。写缺点、写哪里不好用、写你最后没继续用，都算真实体验，一样能过。
+          唯一的要求是<b>确实用过</b>，内容是你自己的经历而不是复制来的通稿。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q3. 有粉丝数或点赞要求吗？</summary>
+        <div class="a">
+          没有。新号、零粉丝、个位数阅读都算。我们看的是内容真实不真实，
+          不是数据好不好看。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q4. 可以发在哪些平台？</summary>
+        <div class="a">
+          <span data-share-channels></span> 都可以，其他公开平台也行，只要是能直接打开链接看到的。
+          私密笔记、仅粉丝可见、群聊截图不算。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q5. 多久能审核完？</summary>
+        <div class="a">
+          一般 <span data-share-review></span> 内回复。赶上秋招高峰期可能慢一点，
+          超过三天没回就在群里再戳一次管理员，别重复发多条。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q6. 我已经买过卡了，还能领吗？</summary>
+        <div class="a">
+          能。福利是<b>减价资格</b>，不是新卡：你可以留着升级买断版时用，
+          也可以让管理员直接给你下一张卡减价。已经买过的档位不会退差价。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q7. 一个人能领几次？</summary>
+        <div class="a">
+          每人限 <span data-share-limit></span> 次。同一人多条笔记、多个小号、同一篇笔记换平台重发，
+          都只算一次。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q8. 截图会不会泄露我的隐私？</summary>
+        <div class="a">
+          会不会泄露取决于你怎么打码。请务必遮挡姓名、手机号、身份证号、学校与公司全名。
+          我们<b>不需要</b>你的简历原文，也不会要求你发身份证或在读证明来换福利。
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Q9. 笔记可以删吗？</summary>
+        <div class="a">
+          至少保持公开 <span data-share-keep></span> 天。领完就删、或者改成仅自己可见的，
+          后续同一个人再提交不予通过。
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <div>
+      <h2>先免费用 10 次，再决定要不要发</h2>
+      <p>不用卡密、不用付款，装完就能填。用顺手了再考虑发笔记换福利。</p>
+    </div>
+    <div class="cta-act">
+      <a class="btn btn-lime" href="pricing.html">查看授权方案</a>
+      <button class="btn btn-ghost" data-copy-qq style="background:transparent;color:#fff;border-color:rgba(255,255,255,.28)">复制群号</button>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+          </span>
+          Offermate
+        </div>
+        <p>浏览器扩展，把简历按语义填进网申表单。无后端服务器，简历只存本机，不自动提交。</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>产品</h4>
+          <a href="index.html">功能介绍</a>
+          <a href="pricing.html">授权方案</a>
+          <a href="jobs.html">秋招岗位</a>
+          <a href="my.html">我的投递</a>
+          <a href="pricing.html#howto">怎么激活</a>
+        </div>
+        <div class="foot-col">
+          <h4>支持</h4>
+          <a href="pricing.html#faq">常见问题</a>
+          <a href="share.html">体验官福利</a>
+          <span>QQ 群 <b data-qq style="color:#fff"></b></span>
+          <a data-email href="mailto:">邮箱</a>
+        </div>
+        <div class="foot-col">
+          <h4>其他</h4>
+          <a data-privacy href="#" target="_blank" rel="noopener">隐私政策</a>
+          <span>支持 Edge / Chrome</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Offermate</span>
+      <span class="sep">·</span>
+      <span>扩展 <b data-ver style="color:rgba(232,240,255,.6)"></b></span>
+      <span class="sep">·</span>
+      <span>虚拟商品，卡密发出后不支持退款</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/share.js"></script>
+</body>
+</html>

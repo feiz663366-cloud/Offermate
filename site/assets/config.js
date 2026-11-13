@@ -15,7 +15,7 @@
 (typeof window !== 'undefined' ? window : self).SITE = {
   brand: 'Offermate',
   slogan: 'AI 网申与测评助手',
-  version: '1.9.32',
+  version: '1.9.33',
 
   /* 联系方式（与扩展 support-info.js 同源） */
   qqGroup: '1129142429',
@@ -94,5 +94,21 @@
     'AI 测评辅助（Key 可选）',
     '简历只存本机，不上传服务器',
     '不自动提交，投递前由你确认'
-  ]
+  ],
+
+  /* ---------- 体验官福利（share.html） ----------
+     玩法：用户在公开平台发一条真实使用体验 → 加群私聊管理员提交链接 →
+     人工审核通过 → 买断版立减 off 元。
+     off 只作用于 planId 指定的档位，到手价 = 该档 price - off，由 share.js 现算，
+     页面 HTML 里不写死任何金额（_check-site.js 会拦「¥ + 数字」）。
+     关掉活动把 on 改成 false，页面会整体隐藏福利区并提示「本期已结束」。 */
+  share: {
+    on: true,
+    off: 15,               // 立减金额
+    planId: 'buyout',      // 作用于哪一档（改这里就换档）
+    channels: '小红书 / 抖音 / B站 / 知乎',
+    reviewDays: '1–2 个工作日',
+    keepDays: 30,          // 笔记需保持公开的天数
+    perPerson: 1           // 每人可领次数
+  }
 };
