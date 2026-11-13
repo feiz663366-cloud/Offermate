@@ -15,7 +15,7 @@
 (typeof window !== 'undefined' ? window : self).SITE = {
   brand: 'Offermate',
   slogan: 'AI 网申与测评助手',
-  version: '1.9.33',
+  version: '1.9.34',
 
   /* 联系方式（与扩展 support-info.js 同源） */
   qqGroup: '1129142429',
