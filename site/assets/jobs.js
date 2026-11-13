@@ -8,8 +8,19 @@
 (function () {
   'use strict';
 
-  var BASE = 'data/jobs/';
+  var LOCAL_BASE = 'data/jobs/';
   var PAGE = 40;
+
+  /* 数据地址：网页版读同目录 data/jobs/；
+     扩展内（chrome-extension://）和 file:// 打开时没有 data/ 目录（5MB 不进扩展包），
+     直接读线上快照。GitHub Pages 带 Access-Control-Allow-Origin: *，跨域可用。 */
+  var _S = (typeof window !== 'undefined' && window.SITE) || {};
+  var REMOTE_BASE = _S.siteOnline
+    ? String(_S.siteOnline).replace(/\/+$/, '') + '/data/jobs/'
+    : '';
+  var OFFLINE_PAGE = /^(chrome|moz)-extension:$/.test(location.protocol) ||
+    location.protocol === 'file:';
+  var BASE = (OFFLINE_PAGE && REMOTE_BASE.indexOf('http') === 0) ? REMOTE_BASE : LOCAL_BASE;
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -91,6 +102,14 @@
     });
   }
 
+  /* 先读 BASE，失败再退到线上快照（网页版部署不全时也能兜住） */
+  function getData(name) {
+    return getJSON(BASE + name).catch(function (e) {
+      if (!REMOTE_BASE || BASE === REMOTE_BASE) throw e;
+      return getJSON(REMOTE_BASE + name);
+    });
+  }
+
   function loadGroup(key) {
     var g = null;
     for (var i = 0; i < state.manifest.groups.length; i++) {
@@ -99,7 +118,7 @@
     if (!g) return Promise.resolve();
 
     $('jList').innerHTML = '<p class="jobs-loading">正在加载 ' + esc(g.label) + ' 岗位…</p>';
-    return getJSON(BASE + g.file).then(function (rows) {
+    return getData(g.file).then(function (rows) {
       state.group = key;
       state.rows = rows.map(decorate);
       buildFacets();
@@ -315,7 +334,7 @@
 
   /* ---------- 启动 ---------- */
   function boot() {
-    getJSON(BASE + 'manifest.json').then(function (m) {
+    getData('manifest.json').then(function (m) {
       state.manifest = m;
       F = {};
       m.fields.forEach(function (k, i) { F[k] = i; });
@@ -347,20 +366,15 @@
       bind();
       return loadGroup(key);
     }).catch(function (err) {
-      var S = window.SITE || {};
-      var offline = /^(chrome|moz)-extension:$/.test(location.protocol) || location.protocol === 'file:';
-      var online = (S.siteOnline || '') + 'jobs.html';
-      if (offline) {
-        // 扩展内的 site/ 副本不带 data/（5MB+ 且每天在变），引导到网页版看
-        $('jList').innerHTML = '<p class="jobs-loading">岗位库需要联网加载最新数据。' +
-          (online.indexOf('http') === 0
-            ? '<br><a class="btn btn-lime btn-sm" style="margin-top:14px;display:inline-flex" href="' +
-              esc(online) + '" target="_blank" rel="noopener noreferrer">在网页版打开岗位库</a>'
-            : '') + '</p>';
-      } else {
-        $('jList').innerHTML = '<p class="jobs-loading">岗位数据没加载出来（' + esc(err.message) +
-          '）。<br>请检查网络后刷新页面。</p>';
-      }
+      var online = REMOTE_BASE
+        ? REMOTE_BASE.replace(/\/data\/jobs\/$/, '/jobs.html')
+        : '';
+      $('jList').innerHTML = '<p class="jobs-loading">岗位数据没加载出来（' + esc(err.message) +
+        '）。<br>请检查网络后刷新。' +
+        (online.indexOf('http') === 0
+          ? '<br><a class="btn btn-lime btn-sm" style="margin-top:14px;display:inline-flex" href="' +
+            esc(online) + '" target="_blank" rel="noopener noreferrer">改用网页版打开</a>'
+          : '') + '</p>';
     });
   }
 
