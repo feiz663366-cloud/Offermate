@@ -158,6 +158,130 @@
     });
   }
 
+  /* ---------- 获取扩展 ---------- */
+  /* 页面右上角与首屏的「获取扩展」按钮，统一由这里生成：
+     - config.install.storeUrl 有值 → 直接开商店详情页（点「获取」即装，之后自动更新）
+     - 没有值 → 弹引导框，说明还在审核，并给加群兜底。绝不留死链。
+     - 扩展内打开（IS_EXT）→ 整个按钮不出现，已经在扩展里了。
+     按钮是 JS 注入的，5 个页面共用一份 site.js，不用改 5 遍 HTML。 */
+  var INSTALL = S.install || {};
+  var STORE_URL = String(INSTALL.storeUrl || '').trim();
+  var STORE_NAME = String(INSTALL.storeName || 'Edge 加载项商店');
+
+  var ICO_PUZZLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 4.5a2.5 2.5 0 0 1 5 0V6h2.2A1.3 1.3 0 0 1 18 7.3V10h1.5a2.5 2.5 0 0 1 0 5H18v2.7a1.3 1.3 0 0 1-1.3 1.3H14v-1.5a2.5 2.5 0 0 0-5 0V19H6.3A1.3 1.3 0 0 1 5 17.7V15h1.5a2.5 2.5 0 0 0 0-5H5V7.3A1.3 1.3 0 0 1 6.3 6h3.2V4.5z"/></svg>';
+
+  function installOpen() {
+    if (STORE_URL) {
+      window.open(STORE_URL, '_blank', 'noopener');
+      toast('已打开' + STORE_NAME + '，点「获取」即可安装');
+      return;
+    }
+    var m = $('installMask');
+    if (!m) return;
+    m.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var box = m.querySelector('.imodal');
+    if (box) box.focus();
+  }
+
+  function installClose() {
+    var m = $('installMask');
+    if (!m) return;
+    m.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  function buildInstall() {
+    /* 三步说明里的第 1 步按状态换文案：
+       扩展内 → 已经装好了；商店可跳 → 讲怎么装；还在审核 → 讲先加群 */
+    var stepTxt = IS_EXT
+      ? '已经装好了，跳过这步。'
+      : (STORE_URL
+        ? '点右上角「获取扩展」，跳到 ' + STORE_NAME + ' 点「获取」→「添加扩展」就装好。'
+        : '商店还在审核，先加群拿安装包；上架后点「获取扩展」一下就能装。');
+    [].forEach.call(document.querySelectorAll('[data-install-step]'), function (el) {
+      el.textContent = stepTxt;
+    });
+
+    if (IS_EXT) {   // 扩展自带的说明页里不显示安装入口
+      [].forEach.call(document.querySelectorAll('[data-install]'), function (el) {
+        el.parentNode.removeChild(el);
+      });
+      return;
+    }
+
+    /* jobs.html 原本没有 toast 容器，复制群号点了没反应；顺手补一个 */
+    if (!$('toast')) {
+      var t = document.createElement('div');
+      t.className = 'toast';
+      t.id = 'toast';
+      t.setAttribute('role', 'status');
+      t.setAttribute('aria-live', 'polite');
+      document.body.appendChild(t);
+    }
+
+    /* 导航按钮：放在「查看授权」右侧（最右 = 主操作） */
+    [].forEach.call(document.querySelectorAll('.nav-cta'), function (box) {
+      if (box.querySelector('[data-install]')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn btn-lime btn-sm';
+      b.setAttribute('data-install', '');
+      b.textContent = '获取扩展';
+      box.appendChild(b);
+    });
+
+    /* 商店能直接跳就不需要引导框，少一份 DOM */
+    if (STORE_URL) return;
+
+    var mask = document.createElement('div');
+    mask.className = 'imask';
+    mask.id = 'installMask';
+    mask.hidden = true;
+    mask.innerHTML = '' +
+      '<div class="imodal" role="dialog" aria-modal="true" aria-labelledby="imTitle" tabindex="-1">' +
+        '<button class="ix" type="button" data-install-close aria-label="关闭">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
+        '</button>' +
+        '<div class="ihead">' +
+          '<span class="iico">' + ICO_PUZZLE + '</span>' +
+          '<div>' +
+            '<h3 id="imTitle">正在 Edge 加载项商店审核中</h3>' +
+            '<p class="isub">通过后这个按钮会直接跳到商店页，点「获取」就装好，之后还会自动更新——不用再找我要安装包。</p>' +
+            (INSTALL.eta ? '<span class="ieta">' + INSTALL.eta + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<ol class="isteps">' +
+          '<li><b>1</b><div><h4>点「获取扩展」</h4><p>跳到 ' + STORE_NAME + '详情页</p></div></li>' +
+          '<li><b>2</b><div><h4>点「获取」→「添加扩展」</h4><p>浏览器右上角出现图标就算装好</p></div></li>' +
+          '<li><b>3</b><div><h4>新用户直接能填 10 次</h4><p>不用先买卡，用顺手了再说</p></div></li>' +
+        '</ol>' +
+        '<div class="igroup">' +
+          '<div class="igroup-l">' +
+            '<span>等不及审核，想先装上用？</span>' +
+            '<b>QQ 群 <em data-qq></em></b>' +
+          '</div>' +
+          '<button class="btn btn-dark btn-sm" type="button" data-copy-qq>复制群号</button>' +
+        '</div>' +
+        '<p class="itip">审核通过后群里会发通知，页面上的按钮也会自动变成直达商店。</p>' +
+      '</div>';
+    document.body.appendChild(mask);
+
+    /* 点遮罩、点 × 都关；Esc 也关 */
+    mask.addEventListener('click', function (e) {
+      if (e.target === mask || e.target.closest('[data-install-close]')) installClose();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !mask.hidden) installClose();
+    });
+
+    /* 群号占位（引导框是后插入的，启动时那轮 [data-qq] 已经跑过了） */
+    [].forEach.call(mask.querySelectorAll('[data-qq]'), function (el) {
+      el.textContent = QQ || '暂未开放';
+    });
+  }
+
   /* ---------- 从扩展跳转 ---------- */
   /* 页面间点链接（首页 ↔ 定价）时 query 会丢，用 sessionStorage 兜住。
      同一标签页内有效，不落盘、不外发；file:// 下可能被拒，包 try。 */
@@ -247,11 +371,14 @@
     renderFree();
     initFromExtension();
     initNav();
+    buildInstall();
 
-    // 事件委托：所有「获取卡密」按钮 + 群号复制
+    // 事件委托：所有「获取卡密」按钮 + 群号复制 + 获取扩展
     document.addEventListener('click', function (e) {
       var buy = e.target.closest('[data-buy]');
       if (buy) { gotPlan(buy.getAttribute('data-buy')); return; }
+      var inst = e.target.closest('[data-install]');
+      if (inst) { e.preventDefault(); installOpen(); return; }
       var cp = e.target.closest('[data-copy-qq]');
       if (cp) {
         copy(QQ).then(function (ok) {
