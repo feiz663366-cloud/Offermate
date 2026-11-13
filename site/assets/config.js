@@ -26,7 +26,7 @@
      privacyLocal 扩展内打开时用（chrome-extension:// 下指向扩展自带的隐私政策页）
      site.js 按 location.protocol 自动选，不用改这里 */
   privacyUrl: 'https://feiz663366-cloud.github.io/Offermate/',
-  privacyLocal: 'privacy.html',
+  privacyLocal: '../privacy.html',
   /* 线上站根地址（末尾带斜杠）。扩展内「在网页端查看投递记录」用它拼 my.html */
   siteOnline: 'https://feiz663366-cloud.github.io/Offermate/site/',
   /* 扩展下载地址：留空则「获取扩展」按钮改为提示加群 */

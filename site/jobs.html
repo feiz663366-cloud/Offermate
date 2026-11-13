@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027 届秋招岗位库 · Offermate</title>
+<meta name="description" content="收录上万家企业的 2027 届校招 / 秋招 / 暑期实习岗位，支持按城市、行业、企业性质筛选，一键跳转官方投递页。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/jobs.css">
+</head>
+<body class="jobs-page">
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      </span>
+      Offermate <small>AI 网申助手</small>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">功能</a>
+      <a href="jobs.html" class="on">秋招岗位</a>
+      <a href="pricing.html">会员中心</a>
+      <a href="pricing.html#howto">如何购买</a>
+      <a href="my.html">我的投递</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" data-copy-qq>复制群号</button>
+      <a class="btn btn-dark btn-sm" href="pricing.html">查看授权</a>
+    </div>
+  </div>
+</nav>
+
+<header class="jobs-hero">
+  <div class="wrap">
+    <span class="jobs-pill">2027 届 · 秋招 / 提前批 / 暑期实习</span>
+    <h1>秋招岗位库</h1>
+    <p class="jobs-sub">
+      收录 <b id="jCount">—</b> 家企业的最新校招岗位，每天从招聘公告里汇总。
+      按城市、行业、企业性质筛选，点一下就跳到官方投递页。
+    </p>
+    <p class="jobs-meta" id="jMeta"></p>
+  </div>
+</header>
+
+<section class="jobs-toolbar" id="toolbar">
+  <div class="wrap jobs-toolbar-in">
+    <div class="jobs-search">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.5-2 5 5"/></svg>
+      <input id="q" type="search" placeholder="搜公司、岗位、城市，例如：产品经理 / 深圳 / 银行" autocomplete="off">
+      <button id="qClear" class="jobs-clear" type="button" aria-label="清空" hidden>×</button>
+    </div>
+    <div class="jobs-selects">
+      <select id="fType" aria-label="招聘类型"><option value="">加载中…</option></select>
+      <select id="fCity" aria-label="城市"><option value="">全部城市</option></select>
+      <select id="fNat" aria-label="企业性质"><option value="">全部性质</option></select>
+      <select id="fInd" aria-label="行业"><option value="">全部行业</option></select>
+      <select id="fSort" aria-label="排序">
+        <option value="new">最新发布</option>
+        <option value="ddl">快截止的在前</option>
+        <option value="name">公司名 A-Z</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<main class="wrap jobs-main">
+  <div class="jobs-bar">
+    <p class="jobs-hit">共 <b id="jHit">0</b> 条结果</p>
+    <button id="jReset" class="jobs-reset" type="button" hidden>清除筛选</button>
+  </div>
+  <div id="jList" class="jobs-list" aria-live="polite"></div>
+  <div id="jEmpty" class="jobs-empty" hidden>
+    <p>没有匹配的岗位</p>
+    <span>换个关键词，或者清掉筛选条件再试</span>
+  </div>
+  <div class="jobs-foot">
+    <button id="jMore" class="btn btn-dark" type="button" hidden>加载更多</button>
+    <p id="jProgress" class="jobs-progress"></p>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C9FF3B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+          </span>
+          Offermate
+        </div>
+        <p>浏览器扩展，把简历按语义填进网申表单。无后端服务器，简历只存本机，不自动提交。</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>产品</h4>
+          <a href="index.html">功能介绍</a>
+          <a href="jobs.html">秋招岗位</a>
+          <a href="pricing.html">授权方案</a>
+          <a href="my.html">我的投递</a>
+        </div>
+        <div class="foot-col">
+          <h4>数据</h4>
+          <a id="jSrc" href="#" target="_blank" rel="noopener">腾讯文档 · 27届校招总表</a>
+          <span id="jUpdated">—</span>
+          <span>岗位以企业官方公告为准</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Offermate</span>
+      <span class="sep">·</span>
+      <a data-privacy href="#" target="_blank" rel="noopener">隐私政策</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/jobs.js"></script>
+</body>
+</html>
