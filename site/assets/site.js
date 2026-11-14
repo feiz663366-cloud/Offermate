@@ -174,7 +174,7 @@
   function installOpen() {
     if (STORE_URL) {
       window.open(STORE_URL, '_blank', 'noopener');
-      toast('已打开' + STORE_NAME + '，点「获取」即可安装');
+      toast('已打开 ' + STORE_NAME + '，点「获取」即可安装');
       return;
     }
     var m = $('installMask');
@@ -198,7 +198,7 @@
     var stepTxt = IS_EXT
       ? '已经装好了，跳过这步。'
       : (STORE_URL
-        ? '点右上角「获取扩展」，跳到 ' + STORE_NAME + ' 点「获取」→「添加扩展」就装好。'
+        ? '点右上角「获取扩展」，跳到 ' + STORE_NAME + '，点「获取」→「添加扩展」就装好。'
         : '商店还在审核，先加群拿安装包；上架后点「获取扩展」一下就能装。');
     [].forEach.call(document.querySelectorAll('[data-install-step]'), function (el) {
       el.textContent = stepTxt;
