@@ -15,7 +15,7 @@
 (typeof window !== 'undefined' ? window : self).SITE = {
   brand: 'Offermate',
   slogan: 'AI 网申与测评助手',
-  version: '2.0.0',
+  version: '2.0.1',
 
   /* 联系方式（与扩展 support-info.js 同源） */
   qqGroup: '1129142429',
@@ -34,14 +34,15 @@
      storeUrl 留空 → 点一下弹引导框：说明还在审核 + 给加群兜底（不做死链）。
      扩展内打开站点时这两个按钮不显示（已经在扩展里了）。
 
-     审核通过后只改这一行：
-       storeUrl: 'https://microsoftedge.microsoft.com/addons/detail/xxxxxxx'
+     2026-11-14 已过审，这里填的是商店详情页的短地址（只带扩展 ID，
+     不带 slug）——长地址里的中文 slug 会被百分号编码，又长又容易被复制断。
+     短地址实测 200 且能正常打开详情页。
      _check-site.js 会校验：非空时必须是 microsoftedge.microsoft.com/addons/detail
      开头的 https 地址，填错域名会被自检拦下来。 */
   install: {
-    storeUrl: '',
+    storeUrl: 'https://microsoftedge.microsoft.com/addons/detail/dbphbpaemlgjiohlhckomkndcagmflej',
     storeName: 'Edge 加载项商店',
-    eta: '审核中，预计 3–7 个工作日'
+    eta: ''   // 已上架，不再显示「审核中」
   },
 
   /* 云端（Supabase）

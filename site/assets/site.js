@@ -405,7 +405,13 @@
       if (S.email && el.tagName === 'A') el.href = 'mailto:' + S.email;
     });
     [].forEach.call(document.querySelectorAll('[data-ver]'), function (el) {
-      el.textContent = S.version ? ('v' + S.version) : '';
+      // 扩展内打开时以 manifest 为准：扩展包里的 config.js 是 sync-site.py 拷进来的，
+      // 版本号可能比扩展本体慢半拍（比如包是 2.0.1、站点源还是 2.0.0）。
+      var v = S.version;
+      if (IS_EXT) {
+        try { v = chrome.runtime.getManifest().version || v; } catch (e) {}
+      }
+      el.textContent = v ? ('v' + v) : '';
     });
 
     // 隐私政策：扩展内 / 本地双击 → 指向扩展自带的 privacy.html；线上 → 指向站点
